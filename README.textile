@@ -14,16 +14,6 @@ NOTE: MySQL only because of date functions use.
 h2. USAGE / INSTALLATION
 ------------------------
 
-h3. Step 1
-
-Install this plugin
-
-script/plugin install git://github.com/timcharper/bundle-fu.git
-
-h3. Step 2
-
-Put the following around your stylesheets/javascripts (note it works with any method of including assets!):
-
 <pre><code>
   
 </code></pre>
