@@ -5,9 +5,9 @@ A simple way to grab recent activity on a given model from a table grouped by da
 or week with only 1 SQL query and giving the ability to pad the results for days/weeks/hours with no activity.
 
 The plugin offers the ability to...
- * Present as a Google Chart (line or bar)
- * Scope your model to given :conditions
- * Pad your results for days with no activity
+  * Present as a Google Chart (line or bar)
+  * Scope your model to given :conditions
+  * Pad your results for days with no activity
 
 NOTE: MySQL only because of date functions use.
 
@@ -91,12 +91,14 @@ SQL generated for previous statement...
 </code></pre>
 
 h2. CONVERT DATA INTO GOOGLE CHART
+
 <pre><code>
 Feed.activity_since(6.months.ago, :group_by => :week, :order => :desc).to_activity_gchart
 => "http://chart.apis.google.com/chart?cht=bvs&chs=200x50&chd=t:0,10,15,3,8,4,0,3,2,3,0,11,4,23,14,0,0,0,13,0,4,8,19,10,12,21,1&chco=336699&chbh=a,2&chds=0,23&chf=bg,s,EFEFEF&"
 </code></pre>
 
 h2. OTHER OPTIONS
+
 <pre><code>
   # Grabs a hash of the activity since <time ago> grouped by <hour/day/week>
   # 
@@ -122,6 +124,14 @@ h2. OTHER OPTIONS
   #   * :line_width => "2" (only for :line)
   # 
   def to_activity_gchart(options={})
+</code></pre>
+
+h2. INDEX THE TIMESTAMP YOU USE
+
+Obviously there is not "one index fits all" but you should include an index on at least the timestamp that fits the conditions you are using.
+
+<pre><code>
+add_index :model, [:created_at]
 </code></pre>
 
 Copyright (c) 2009 Cary Dunn <cary.dunn@gmail.com> "http://elctech.com":http://elctech.com, released under the MIT license
