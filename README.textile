@@ -1,0 +1,31 @@
+h1. HasActivity
+---------------
+
+A simple way to grab recent activity on a given model from a table grouped by day, hour,
+or week with only 1 SQL query and giving the ability to pad the results for days/weeks/hours with no activity.
+
+The plugin offers the ability to...
+ * Present as a Google Chart (line or bar)
+ * Scope your model to given :conditions
+ * Pad your results for days with no activity
+
+NOTE: MySQL only because of date functions use.
+
+h2. USAGE / INSTALLATION
+------------------------
+
+h3. Step 1
+
+Install this plugin
+
+script/plugin install git://github.com/timcharper/bundle-fu.git
+
+h3. Step 2
+
+Put the following around your stylesheets/javascripts (note it works with any method of including assets!):
+
+<pre><code>
+  
+</code></pre>
+
+Copyright (c) 2009 Cary Dunn <cary.dunn@gmail.com> http://elctech.com, released under the MIT license
