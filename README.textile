@@ -124,4 +124,4 @@ h2. OTHER OPTIONS
   def to_activity_gchart(options={})
 </code></pre>
 
-Copyright (c) 2009 Cary Dunn <cary.dunn@gmail.com> http://elctech.com, released under the MIT license
+Copyright (c) 2009 Cary Dunn <cary.dunn@gmail.com> "http://elctech.com":http://elctech.com, released under the MIT license
