@@ -16,6 +16,8 @@ NOTE: MySQL only because of date functions use.
 h2. USAGE / INSTALLATION
 ------------------------
 
+<pre><code>script/plugin install git://github.com/cdunn/has_activity.git</pre></code>
+
 <pre><code>
   class Feed < ActiveRecord::Base
     # Defaults to created_at
