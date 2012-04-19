@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
     ".document",
     "Gemfile",
     "LICENSE.txt",
-    "MIT-LICENSE",
     "README.rdoc",
     "Rakefile",
     "VERSION",
