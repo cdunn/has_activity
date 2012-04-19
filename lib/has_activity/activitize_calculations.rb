@@ -113,7 +113,7 @@ module HasActivity
           entry = {
             :offset   => r["has_activity_#{unit}_ago"].to_i,
             :activity => r["has_activity_count"].to_i,
-            :date     => round_activity_timestamp(r["has_activity_timestamp"].is_a?(String) ? Time.parse(r["has_activity_timestamp"]) : r["has_activity_timestamp"], unit).in_time_zone
+            :date     => round_activity_timestamp(r["has_activity_timestamp"].is_a?(String) ? Time.parse(r["has_activity_timestamp"]) : r["has_activity_timestamp"], unit)
           }
           (order.to_s == "asc") ? rs.push(entry) : rs.unshift(entry)
         end
@@ -130,7 +130,7 @@ module HasActivity
             entry = {
               :offset    => current_unit_offset,
               :activity  => results[current_result_index]["has_activity_count"].to_i,
-              :timestamp => round_activity_timestamp(results[current_result_index]["has_activity_timestamp"].is_a?(String) ? Time.parse(results[current_result_index]["has_activity_timestamp"]) : results[current_result_index]["has_activity_timestamp"], unit).in_time_zone
+              :timestamp => round_activity_timestamp(results[current_result_index]["has_activity_timestamp"].is_a?(String) ? Time.parse(results[current_result_index]["has_activity_timestamp"]) : results[current_result_index]["has_activity_timestamp"], unit)
             }
             current_result_index = current_result_index+1
           else
@@ -159,8 +159,15 @@ module HasActivity
         padded_results
       end # pad_activity_results
 
-      def round_activity_timestamp(timestamp, round_to)
-        Time.at((timestamp.to_f / 1.send(round_to)).floor * 1.send(round_to))
+      def round_activity_timestamp(t, round_to)
+        #Time.at((t.to_f / 1.send(round_to)).floor * 1.send(round_to))
+        if round_to == "weeks"
+          day = t.beginning_of_week.day
+        else
+          day = t.day
+        end
+
+        Time.new(t.year, t.month, (%w(weeks days hours).include?(round_to) ? day : 1), (round_to == "hours" ? t.hour : 0), 0, 0, Time.zone.utc_offset)
       end
     
     end # OverallMethods

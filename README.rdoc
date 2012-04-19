@@ -6,6 +6,10 @@ A simple way to grab recent activity on a given model grouped by hour, day, week
 
 == Usage
 
+Add gem to Gemfile...
+  
+  gem 'has-activity', '~>0.1.0'
+
 Add the activity functionality to a model...
 
   # app/models/user.rb

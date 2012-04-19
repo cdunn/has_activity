@@ -30,5 +30,9 @@ unless Array.instance_methods.include? 'to_activity_gchart'
       end
     end
 
+    def to_activity_rickshaw_data
+      self.collect {|v| {:x => v[:timestamp].to_i, :y => v[:activity]} }
+    end
+
   end
 end
