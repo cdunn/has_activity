@@ -11,7 +11,6 @@ module HasActivity
         # Normalize dates...
         start_and_end = [between_start.to_time, between_end.to_time]
         if between_start > between_end
-          puts "flip dates..."
           start_and_end = start_and_end.reverse
         end
         calculate_activity(*start_and_end, options.merge(:between => true))
