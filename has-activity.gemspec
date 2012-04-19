@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Cary Dunn"]
-  s.date = "2012-04-18"
+  s.date = "2012-04-19"
   s.description = "TODO: longer description of your gem"
   s.email = "cary.dunn@gmail.com"
   s.extra_rdoc_files = [
@@ -23,7 +23,12 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "has-activity.gemspec",
     "lib/has-activity.rb",
+    "lib/has_activity/activitize.rb",
+    "lib/has_activity/activitize_calculations.rb",
+    "lib/has_activity/core.rb",
+    "lib/has_activity/graph_ext.rb",
     "test/helper.rb",
     "test/test_has-activity.rb"
   ]
