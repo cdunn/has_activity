@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Cary Dunn"]
   s.date = "2012-04-19"
-  s.description = "TODO: longer description of your gem"
+  s.description = "A simple way to grab recent activity on a given model grouped by hour, day, week or month (time series). Supports \"padding\" for intervals without activity."
   s.email = "cary.dunn@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
     ".document",
     "Gemfile",
     "LICENSE.txt",
+    "MIT-LICENSE",
     "README.rdoc",
     "Rakefile",
     "VERSION",
@@ -32,11 +33,11 @@ Gem::Specification.new do |s|
     "test/helper.rb",
     "test/test_has-activity.rb"
   ]
-  s.homepage = "http://github.com/cdunn/has-activity"
+  s.homepage = "http://github.com/cdunn/has_activity"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.11"
-  s.summary = "TODO: one-line summary of your gem"
+  s.summary = "A simple way to grab recent activity on a given model grouped by hour, day, week or month (time series)."
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

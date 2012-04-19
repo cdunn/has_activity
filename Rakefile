@@ -15,10 +15,10 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "has-activity"
-  gem.homepage = "http://github.com/cdunn/has-activity"
+  gem.homepage = "http://github.com/cdunn/has_activity"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = "A simple way to grab recent activity on a given model grouped by hour, day, week or month (time series)."
+  gem.description = "A simple way to grab recent activity on a given model grouped by hour, day, week or month (time series). Supports \"padding\" for intervals without activity."
   gem.email = "cary.dunn@gmail.com"
   gem.authors = ["Cary Dunn"]
   # dependencies defined in Gemfile
