@@ -30,12 +30,18 @@ module HasActivity
       #       :hour, :day, :week
       #   * :order
       #       :asc, :desc
+      #   * :count_on
+      #       default is "*". optionally put a custom aggregator ex "table.field".
+      #   * :count_distinct
+      #       default is false. optionally set to true for distinct counts on :count_on ex. "COUNT(DISTINCT table.field)".
       # 
       def calculate_activity(between_start, between_end, options={})
         options[:padding] ||= true
         options[:order] ||= :asc
         options[:by] ||= :hour
         options[:on] ||= has_activity_options[:on]
+        options[:count_on] ||= "*"
+        options[:count_distinct] = false unless options[:count_distinct]
 
         # TODO: check for index on :on column
 
@@ -43,16 +49,9 @@ module HasActivity
         # TODO: review other possibilities for people to screw up the query...
         raise "You cannot use custom #group filters with #activity_since" if self.group_values.present?
 
-        if options[:on].is_a?(String)
-          # insert raw...
-          activity_column = options[:on].split(".").collect { |v|
-            connection.quote_column_name(v)
-          }.join(".")
-        else
-          activity_table_name = connection.quote_table_name(self.table.name)
-          activity_column_name = connection.quote_column_name(options[:on])
-          activity_column = "#{activity_table_name}.#{activity_column_name}"
-        end
+        activity_column = parse_activity_column(options[:on])
+        count_column = parse_activity_column(options[:count_on])
+        count_column = "DISTINCT(#{count_column})" if options[:count_distinct]
 
         activity_end_time = "'#{between_end.to_s(:db)}'"
 
@@ -60,7 +59,7 @@ module HasActivity
         when "hour"
           relation = self.select("
             #{activity_column} AS has_activity_timestamp,
-            COUNT(*) AS has_activity_count,
+            COUNT(#{count_column}) AS has_activity_count,
             ((((YEAR(#{activity_end_time}) - YEAR(#{activity_column}))*365)+(DAYOFYEAR(#{activity_end_time})-DAYOFYEAR(#{activity_column})))*24)+(HOUR(#{activity_end_time})-HOUR(#{activity_column})) AS has_activity_hours_ago,
             CONCAT(YEAR(#{activity_column}), CONCAT(DAYOFYEAR(#{activity_column}), HOUR(#{activity_column}))) AS has_activity_uniqueness
           ")
@@ -69,7 +68,7 @@ module HasActivity
         when "day"
           relation = self.select("
             #{activity_column} AS has_activity_timestamp,
-            COUNT(*) AS has_activity_count,
+            COUNT(#{count_column}) AS has_activity_count,
             DATEDIFF(#{activity_end_time}, #{activity_column}) AS has_activity_days_ago,
             CONCAT(YEAR(#{activity_column}), CONCAT(DAYOFYEAR(#{activity_column}))) AS has_activity_uniqueness
           ")
@@ -78,7 +77,7 @@ module HasActivity
         when "week"
           relation = self.select("
             #{activity_column} AS has_activity_timestamp,
-            COUNT(*) AS has_activity_count,
+            COUNT(#{count_column}) AS has_activity_count,
             ((YEAR(#{activity_end_time}) - YEAR(#{activity_column}))*52)+(WEEK(#{activity_end_time})-WEEK(#{activity_column})) AS has_activity_weeks_ago,
             YEARWEEK(#{activity_column}) AS has_activity_uniqueness
           ")
@@ -87,7 +86,7 @@ module HasActivity
         when "month"
           relation = self.select("
             #{activity_column} AS has_activity_timestamp,
-            COUNT(*) AS has_activity_count,
+            COUNT(#{count_column}) AS has_activity_count,
             ((YEAR(#{activity_end_time}) - YEAR(#{activity_column}))*12)+(MONTH(#{activity_end_time})-MONTH(#{activity_column})) AS has_activity_months_ago,
             CONCAT(YEAR(#{activity_column}), CONCAT(MONTH(#{activity_column}))) AS has_activity_uniqueness
           ")
@@ -159,6 +158,21 @@ module HasActivity
         padded_results
       end # pad_activity_results
 
+      def parse_activity_column(col)
+        if col.is_a?(String)
+          return "*" if col == "*" # Do not quote '*'
+          # insert raw...
+          activity_column = col.split(".").collect { |v|
+            connection.quote_column_name(v)
+          }.join(".")
+        else
+          activity_table_name = connection.quote_table_name(self.table.name)
+          activity_column_name = connection.quote_column_name(col)
+          activity_column = "#{activity_table_name}.#{activity_column_name}"
+        end
+        activity_column
+      end # parse_activity_column
+
       def round_activity_timestamp(t, round_to)
         #Time.at((t.to_f / 1.send(round_to)).floor * 1.send(round_to))
         if round_to == "weeks"
@@ -168,7 +182,7 @@ module HasActivity
         end
 
         Time.new(t.year, t.month, (%w(weeks days hours).include?(round_to) ? day : 1), (round_to == "hours" ? t.hour : 0), 0, 0, Time.zone.utc_offset)
-      end
+      end # round_activity_timestamp
     
     end # OverallMethods
   end # ActivitizeCalculations
