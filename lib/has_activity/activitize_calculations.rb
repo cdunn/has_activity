@@ -34,6 +34,9 @@ module HasActivity
       #       default is "*". optionally put a custom aggregator ex "table.field".
       #   * :count_distinct
       #       default is false. optionally set to true for distinct counts on :count_on ex. "COUNT(DISTINCT table.field)".
+      #   * :sum_on
+      #       default is to :count_on. optionally put a custom aggregator ex "table.field" which will "SUM(table.field)"
+      #       instead of COUNT.
       # 
       def calculate_activity(between_start, between_end, options={})
         options[:padding] ||= true
@@ -41,6 +44,7 @@ module HasActivity
         options[:by] ||= :hour
         options[:on] ||= has_activity_options[:on]
         options[:count_on] ||= "*"
+        #options[:sum_on] ||= ""
         options[:count_distinct] = false unless options[:count_distinct]
 
         # TODO: check for index on :on column
@@ -50,8 +54,12 @@ module HasActivity
         raise "You cannot use custom #group filters with #activity_since" if self.group_values.present?
 
         activity_column = parse_activity_column(options[:on])
-        count_column = parse_activity_column(options[:count_on])
-        count_column = "DISTINCT(#{count_column})" if options[:count_distinct]
+        if options[:sum_on]
+          aggregate_column = "SUM(#{parse_activity_column(options[:sum_on])})"
+        else
+          aggregate_column = "COUNT(#{parse_activity_column(options[:count_on])})"
+          aggregate_column = "DISTINCT(#{aggregate_column})" if options[:count_distinct]
+        end
 
         activity_end_time = "'#{between_end.to_s(:db)}'"
 
@@ -59,7 +67,7 @@ module HasActivity
         when "hour"
           relation = self.select("
             #{activity_column} AS has_activity_timestamp,
-            COUNT(#{count_column}) AS has_activity_count,
+            #{aggregate_column} AS has_activity_count,
             ((((YEAR(#{activity_end_time}) - YEAR(#{activity_column}))*365)+(DAYOFYEAR(#{activity_end_time})-DAYOFYEAR(#{activity_column})))*24)+(HOUR(#{activity_end_time})-HOUR(#{activity_column})) AS has_activity_hours_ago,
             CONCAT(YEAR(#{activity_column}), CONCAT(DAYOFYEAR(#{activity_column}), HOUR(#{activity_column}))) AS has_activity_uniqueness
           ")
@@ -68,7 +76,7 @@ module HasActivity
         when "day"
           relation = self.select("
             #{activity_column} AS has_activity_timestamp,
-            COUNT(#{count_column}) AS has_activity_count,
+            #{aggregate_column} AS has_activity_count,
             DATEDIFF(#{activity_end_time}, #{activity_column}) AS has_activity_days_ago,
             CONCAT(YEAR(#{activity_column}), CONCAT(DAYOFYEAR(#{activity_column}))) AS has_activity_uniqueness
           ")
@@ -77,7 +85,7 @@ module HasActivity
         when "week"
           relation = self.select("
             #{activity_column} AS has_activity_timestamp,
-            COUNT(#{count_column}) AS has_activity_count,
+            #{aggregate_column} AS has_activity_count,
             ((YEAR(#{activity_end_time}) - YEAR(#{activity_column}))*52)+(WEEK(#{activity_end_time})-WEEK(#{activity_column})) AS has_activity_weeks_ago,
             YEARWEEK(#{activity_column}) AS has_activity_uniqueness
           ")
@@ -86,7 +94,7 @@ module HasActivity
         when "month"
           relation = self.select("
             #{activity_column} AS has_activity_timestamp,
-            COUNT(#{count_column}) AS has_activity_count,
+            #{aggregate_column} AS has_activity_count,
             ((YEAR(#{activity_end_time}) - YEAR(#{activity_column}))*12)+(MONTH(#{activity_end_time})-MONTH(#{activity_column})) AS has_activity_months_ago,
             CONCAT(YEAR(#{activity_column}), CONCAT(MONTH(#{activity_column}))) AS has_activity_uniqueness
           ")
