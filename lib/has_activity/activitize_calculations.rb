@@ -57,8 +57,9 @@ module HasActivity
         if options[:sum_on]
           aggregate_column = "SUM(#{parse_activity_column(options[:sum_on])})"
         else
-          aggregate_column = "COUNT(#{parse_activity_column(options[:count_on])})"
+          aggregate_column = parse_activity_column(options[:count_on])
           aggregate_column = "DISTINCT(#{aggregate_column})" if options[:count_distinct]
+          aggregate_column = "COUNT(#{aggregate_column})"
         end
 
         activity_end_time = "'#{between_end.to_s(:db)}'"
