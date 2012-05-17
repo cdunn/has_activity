@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "has-activity"
-  s.version = "0.3.0"
+  s.version = "0.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Cary Dunn"]
-  s.date = "2012-05-08"
+  s.date = "2012-05-17"
   s.description = "A simple way to grab recent activity on a given model grouped by hour, day, week or month (time series). Supports \"padding\" for intervals without activity."
   s.email = "cary.dunn@gmail.com"
   s.extra_rdoc_files = [
