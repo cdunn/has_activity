@@ -134,7 +134,7 @@ module HasActivity
         current_result_index = 0
         
         while current_unit_offset >= 0 do
-          if current_result_index < results.size && results[current_result_index]["has_activity_#{unit}_ago"].to_i == current_unit_offset
+          if current_result_index < results.count && results[current_result_index]["has_activity_#{unit}_ago"].to_i == current_unit_offset
             entry = {
               :offset    => current_unit_offset,
               :activity  => results[current_result_index]["has_activity_count"].to_i,

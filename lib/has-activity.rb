@@ -14,9 +14,9 @@ require "has_activity/graph_ext"
 $LOAD_PATH.shift
 
 if defined?(ActiveRecord::Base)
-  ActiveRecord::Base.extend HasActivity::Activitize
-  ActiveRecord::Base.send :include, HasActivity::Activitize
-
   ActiveRecord::Calculations.extend HasActivity::ActivitizeCalculations
   ActiveRecord::Calculations.send :include, HasActivity::ActivitizeCalculations
+
+  ActiveRecord::Base.extend HasActivity::Activitize
+  ActiveRecord::Base.send :include, HasActivity::Activitize
 end
